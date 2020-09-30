@@ -1,7 +1,7 @@
 
-#include "video.h"
+#include "MediaPlayer.h"
 
-Video::Video() : m_Texture(),
+MediaPlayer::MediaPlayer() : m_Texture(),
 m_bVideoLoaded(false),
 m_bImageNeedsUpdate(false),
 m_pFormatCtx(NULL),
@@ -22,7 +22,7 @@ m_fTimePassedSinceLastFrameUpdate(0)
 }
 
 
-Video::Video(const string& filename) : m_Texture(),
+MediaPlayer::MediaPlayer(const string& filename) : m_Texture(),
 m_bVideoLoaded(false),
 m_bImageNeedsUpdate(false),
 m_pFormatCtx(NULL),
@@ -50,7 +50,7 @@ m_fTimePassedSinceLastFrameUpdate(0)
     }
 }
 
-bool Video::LoadFromFile(const string& filename)
+bool MediaPlayer::LoadFromFile(const string& filename)
 {
     CloseVideo();
     m_sFilename = filename;
@@ -150,23 +150,23 @@ bool Video::LoadFromFile(const string& filename)
     return true;
 } //Load From File
 
-void Video::Update(float time)
+void MediaPlayer::Update(float time)
 {
-
     if (m_bVideoLoaded)
     {
         m_fTimePassedSinceLastFrameUpdate += time;
-        UpdateImage();
 
-        if (m_fTimePassedSinceLastFrameUpdate > m_fSecondsPerFrame)
+        //this logic below is incorrect!
+        if (m_fTimePassedSinceLastFrameUpdate >= m_fSecondsPerFrame)
         {
             m_fTimePassedSinceLastFrameUpdate = 0;
             LoadNextFrame();
         }
+        UpdateImage();
     }
 }
 
-void Video::LoadNextFrame()
+void MediaPlayer::LoadNextFrame()
 {
     do
     {
@@ -192,7 +192,7 @@ void Video::LoadNextFrame()
 
 }
 
-sf::Color Video::GetPixel(nuint x, nuint y) const
+sf::Color MediaPlayer::GetPixel(nuint x, nuint y) const
 {
     nuint i = 3 * (y * GetWidth() + x);
     sf::Uint8 red = m_pFrameRGB->data[0][i];
@@ -201,7 +201,7 @@ sf::Color Video::GetPixel(nuint x, nuint y) const
     return sf::Color(red, green, blue, 255);
 }
 
-void Video::UpdateImage()
+void MediaPlayer::UpdateImage()
 {
     if (m_bImageNeedsUpdate)
     {
@@ -210,7 +210,7 @@ void Video::UpdateImage()
     }
 }
 
-void Video::CloseVideo()
+void MediaPlayer::CloseVideo()
 {
     if (m_bVideoLoaded)
     {
@@ -227,7 +227,7 @@ void Video::CloseVideo()
     }
 }
 
-Video::~Video()
+MediaPlayer::~MediaPlayer()
 {
     CloseVideo();
 }

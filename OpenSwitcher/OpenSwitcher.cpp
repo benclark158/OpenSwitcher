@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 
-#include "Video.h"
+#include "MediaPlayer.h"
 
 #include <iostream>
 
@@ -25,6 +25,9 @@ void draw() {
     glEnd();
 }
 */
+
+int framerate = 25;
+
 int main()
 {
     std::cout << "Starting switcher" << std::endl;
@@ -32,7 +35,7 @@ int main()
     
     // create the window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "OpenGL", sf::Style::None);
-    //window.setFramerateLimit(60); //Limits frame rate but has tearing
+    window.setFramerateLimit(framerate); //Limits frame rate but has tearing
     window.setVerticalSyncEnabled(true); //forces monitor refresh rate (60fps) no tearing!
 
     // activate the window
@@ -52,22 +55,20 @@ int main()
 
     int frame = 0;
 
-    //Video viddy("Y:\\4 - Final Videos\\YearInReviewV4.mp4");
-    Video viddy("H:\\IN-OUTS\\Intro.mp4");
-    sf::Sprite sprite(viddy);
+    //Video viddy("C:\\Users\\Ben Clark\\Videos\\2020-09-30 20-30-07.mp4");
+    MediaPlayer media("H:\\IN-OUTS\\ScreenStillImage.png");
+    sf::Sprite sprite(media);
 
-    int w = viddy.GetWidth();
-    int h = viddy.GetHeight();
+    int w = media.GetWidth();
+    int h = media.GetHeight();
 
     sprite.setScale(0.5, 0.5);
     sprite.setPosition(1920 / 2, 0);
 
     while (true)
     {
-        float time = clock.getElapsedTime().asSeconds();
-        clock.restart();
 
-        viddy.Update(time);
+        media.Update(1.0 / framerate);
 
         // clear the buffers
         window.clear();

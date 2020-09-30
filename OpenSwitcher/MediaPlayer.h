@@ -1,7 +1,7 @@
 
 #pragma once
-#ifndef VIDEO_H
-#define VIDEO_H
+#ifndef MEDIA_PLAYER_H
+#define MEDIA_PLAYER_H
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -21,7 +21,7 @@ extern "C"
     #include <inttypes.h>
 }
 
-class Video
+class MediaPlayer
 {
 
 private:
@@ -47,8 +47,8 @@ private:
     void UpdateImage();
     void LoadNextFrame();
 public:
-    Video();
-    explicit Video(const string& filename = "");
+    MediaPlayer();
+    explicit MediaPlayer(const string& filename = "");
     bool LoadFromFile(const string& filename);
     void Update(float time);
 
@@ -61,15 +61,15 @@ public:
 
     operator const sf::Texture& () const { return m_Texture; }
 
-    ~Video();
+    ~MediaPlayer();
 
     sf::Color GetPixel(nuint x, nuint y) const;
 
     void CloseVideo();
 
 private:
-    Video(const Video& rhs);
-    Video& operator=(const Video& rhs);
+    MediaPlayer(const MediaPlayer& rhs);
+    MediaPlayer& operator=(const MediaPlayer& rhs);
 };
 
-#endif // VIDEO_H
+#endif // MEDIA_PLAYER_H
