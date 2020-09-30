@@ -9,29 +9,32 @@
 
 #include <iostream>
 
-/*
-void draw() {
-    //Enables alpha channels
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glBegin(GL_POLYGON);
-    glColor4f(1.0, 0.0, 0.0, 0.5);
-    float z = 0.0;
-    glVertex3f(-25.0, -25.0, z);
-    glVertex3f(25.0, -25.0, z);
-    glVertex3f(25.0, 25.0, z);
-    glVertex3f(-25.0, 25.0, z);
-    glEnd();
+extern "C"
+{
+    #include <libavcodec/avcodec.h>
+    #include <libavdevice/avdevice.h>
+    #include <libavfilter/avfilter.h>
+    #include <libavformat/avformat.h>
+    #include <libavutil/avutil.h>
+    #include <libavfilter/buffersink.h>
+    #include <libavfilter/buffersrc.h>
+#include "Webcam.h"
 }
-*/
+
+void registerAll() {
+    av_register_all();
+    avcodec_register_all();
+    avdevice_register_all();
+    avfilter_register_all();
+}
 
 int framerate = 25;
 
 int main()
 {
     std::cout << "Starting switcher" << std::endl;
-    
+
+    registerAll();
     
     // create the window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "OpenGL", sf::Style::None);
@@ -46,44 +49,29 @@ int main()
     window.setMouseCursorVisible(true);
     window.setMouseCursorGrabbed(false);
 
-    int frame_counter = 0;
+    //hidden atm
+    //MediaPlayer media("H:\\IN-OUTS\\ScreenStillImage.png");
+    //sf::Sprite sprite(media);
 
-    sf::RectangleShape rect;
-    rect.setSize(sf::Vector2f(1920, 0));
+    //webcam
+    Webcam webcam("test");
+    webcam.showDshowDevice();
 
-    sf::Clock clock;
-
-    int frame = 0;
-
-    //Video viddy("C:\\Users\\Ben Clark\\Videos\\2020-09-30 20-30-07.mp4");
-    MediaPlayer media("H:\\IN-OUTS\\ScreenStillImage.png");
-    sf::Sprite sprite(media);
-
-    int w = media.GetWidth();
-    int h = media.GetHeight();
-
-    sprite.setScale(0.5, 0.5);
-    sprite.setPosition(1920 / 2, 0);
+    //Not used yet!
+    //sprite.setScale(0.5, 0.5);
+    //sprite.setPosition(1920 / 2, 0);
 
     while (true)
-    {
-
-        media.Update(1.0 / framerate);
+    {   
+        //updates media player
+        //media.Update(1.0 / framerate);
 
         // clear the buffers
         window.clear();
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.0, 0.0, 0.0, 0.0);
 
-        /*
-        if (frame % 2 == 0) {
-            glClearColor(1.0, 0.0, 0.0, 0.0);
-        }
-        else {
-            //glClearColor(0.0, 1.0, 0.0, 0.0);
-        }
-        frame++;*/
-
-        window.draw(sprite);
+        //draws media player sprite!
+        //window.draw(sprite);
 
         window.display();
 
