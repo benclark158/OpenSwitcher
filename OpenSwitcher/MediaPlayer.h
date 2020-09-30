@@ -49,6 +49,8 @@ private:
 public:
     MediaPlayer();
     explicit MediaPlayer(const string& filename = "");
+    ~MediaPlayer();
+
     bool LoadFromFile(const string& filename);
     void Update(float time);
 
@@ -60,8 +62,6 @@ public:
     float GetFrameRate() const { return 1 / m_fSecondsPerFrame; }
 
     operator const sf::Texture& () const { return m_Texture; }
-
-    ~MediaPlayer();
 
     sf::Color GetPixel(nuint x, nuint y) const;
 

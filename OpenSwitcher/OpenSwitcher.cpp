@@ -33,7 +33,7 @@ int framerate = 25;
 int main()
 {
     std::cout << "Starting switcher" << std::endl;
-
+    
     registerAll();
     
     // create the window
@@ -50,13 +50,16 @@ int main()
     window.setMouseCursorGrabbed(false);
 
     //hidden atm
-    //MediaPlayer media("H:\\IN-OUTS\\ScreenStillImage.png");
-    //sf::Sprite sprite(media);
+    MediaPlayer media("H:\RAW_VIDEOS\\7. Matt.MP4");
+    sf::Sprite sprite(media);
 
     //webcam
     Webcam webcam("test");
     webcam.showDshowDevice();
 
+    webcam.init();
+    sf::Sprite camSprite(webcam);
+    
     //Not used yet!
     //sprite.setScale(0.5, 0.5);
     //sprite.setPosition(1920 / 2, 0);
@@ -64,14 +67,17 @@ int main()
     while (true)
     {   
         //updates media player
-        //media.Update(1.0 / framerate);
+        media.Update(1.0 / framerate);
+        webcam.update(1);
+
 
         // clear the buffers
         window.clear();
         glClearColor(0.0, 0.0, 0.0, 0.0);
 
         //draws media player sprite!
-        //window.draw(sprite);
+        window.draw(sprite);
+        window.draw(camSprite);
 
         window.display();
 
@@ -86,5 +92,6 @@ int main()
         }
     }
     
+
     return 0;
 }

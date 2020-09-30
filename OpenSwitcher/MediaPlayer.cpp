@@ -156,7 +156,6 @@ void MediaPlayer::Update(float time)
     {
         m_fTimePassedSinceLastFrameUpdate += time;
 
-        //this logic below is incorrect!
         if (m_fTimePassedSinceLastFrameUpdate >= m_fSecondsPerFrame)
         {
             m_fTimePassedSinceLastFrameUpdate = 0;
@@ -198,7 +197,8 @@ sf::Color MediaPlayer::GetPixel(nuint x, nuint y) const
     sf::Uint8 red = m_pFrameRGB->data[0][i];
     sf::Uint8 green = m_pFrameRGB->data[0][i + 1];
     sf::Uint8 blue = m_pFrameRGB->data[0][i + 2];
-    return sf::Color(red, green, blue, 255);
+    //return sf::Color(red, green, blue, 255);
+    return sf::Color(0, 0, 255, 255);
 }
 
 void MediaPlayer::UpdateImage()

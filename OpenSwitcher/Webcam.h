@@ -21,6 +21,10 @@ extern "C"
 	#include <libavutil/avutil.h>
 	#include <libavfilter/buffersink.h>
 	#include <libavfilter/buffersrc.h>
+	#include <libavcodec/avcodec.h> 
+	#include <libswscale/swscale.h>
+	#include <libavformat/avformat.h>
+	#include <libavutil/imgutils.h>
 }
 
 class Webcam {
@@ -30,18 +34,24 @@ private:
 
 	Webcam(const Webcam& rhs);
 	Webcam& operator=(const Webcam& rhs);
+
+	void loadNextFrame();
 public:
 	Webcam();
-	explicit Webcam(const string& name = "");
+	explicit Webcam(const string& name = "", const int& framerate = 25);
 
-	//sf::Vector2i Size() const { return sf::Vector2i(GetWidth(), GetHeight()); }
+	void capture();
+	void init();
+	void update(int i);
 
-	//nuint GetWidth() const { return m_pCodecCtx->width; }
-	//nuint GetHeight() const { return m_pCodecCtx->height; }
+	sf::Vector2i Size() const { return sf::Vector2i(GetWidth(), GetHeight()); }
 
-	//operator const sf::Texture& () const { return m_Texture; }
+	nuint GetWidth() const { return m_pCodecCtx->width; }
+	nuint GetHeight() const { return m_pCodecCtx->height; }
 
-	//sf::Color GetPixel(nuint x, nuint y) const;
+	operator const sf::Texture& () const { return m_Texture; }
+
+	sf::Color GetPixel(nuint x, nuint y) const;
 
 	void showDshowDevice() {
 		AVFormatContext* pFormatCtx = avformat_alloc_context();
@@ -51,11 +61,22 @@ public:
 		printf("========Device Info=============\n");
 		avformat_open_input(&pFormatCtx, "video=dummy", iformat, &options);
 		printf("================================\n");
-
-		//FULL HD 1080P Webcam
 	}
 
 	~Webcam();
+
+	//Variables
+	string devName;
+	int framerate;
+	AVCodecContext* m_pCodecCtx;
+	AVFrame* m_pFrame;
+	AVFrame* m_pFrameRGB;
+	AVPacket        m_Packet;
+	AVFormatContext* pAVFormatContext;
+	nuint inputVideoStream;
+	bool m_bImageNeedsUpdate;
+	sf::Uint8* m_pBuffer;
+	SwsContext* img_convert_ctx;
 };
 
 #endif // WEBCAM_H
