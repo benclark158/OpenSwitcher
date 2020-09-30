@@ -1,18 +1,39 @@
-// g++ TEST_TEST_TEST.cpp -lsfml-system -lsfml-window -lsfml-graphics -lGL
+
 
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
+
+#include "Video.h"
+
 #include <iostream>
 
+/*
+void draw() {
+    //Enables alpha channels
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBegin(GL_POLYGON);
+    glColor4f(1.0, 0.0, 0.0, 0.5);
+    float z = 0.0;
+    glVertex3f(-25.0, -25.0, z);
+    glVertex3f(25.0, -25.0, z);
+    glVertex3f(25.0, 25.0, z);
+    glVertex3f(-25.0, 25.0, z);
+    glEnd();
+}
+*/
 int main()
 {
-
+    std::cout << "Starting switcher" << std::endl;
+    
+    
     // create the window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "OpenGL", sf::Style::None);
-    window.setFramerateLimit(25); //Limits frame rate but has tearing
-    //window.setVerticalSyncEnabled(true); //forces monitor refresh rate (60fps) no tearing!
+    //window.setFramerateLimit(60); //Limits frame rate but has tearing
+    window.setVerticalSyncEnabled(true); //forces monitor refresh rate (60fps) no tearing!
 
     // activate the window
     window.setActive(true);
@@ -31,8 +52,40 @@ int main()
 
     int frame = 0;
 
+    //Video viddy("Y:\\4 - Final Videos\\YearInReviewV4.mp4");
+    Video viddy("H:\\IN-OUTS\\Intro.mp4");
+    sf::Sprite sprite(viddy);
+
+    int w = viddy.GetWidth();
+    int h = viddy.GetHeight();
+
+    sprite.setScale(0.5, 0.5);
+    sprite.setPosition(1920 / 2, 0);
+
     while (true)
     {
+        float time = clock.getElapsedTime().asSeconds();
+        clock.restart();
+
+        viddy.Update(time);
+
+        // clear the buffers
+        window.clear();
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        /*
+        if (frame % 2 == 0) {
+            glClearColor(1.0, 0.0, 0.0, 0.0);
+        }
+        else {
+            //glClearColor(0.0, 1.0, 0.0, 0.0);
+        }
+        frame++;*/
+
+        window.draw(sprite);
+
+        window.display();
+
         // handle events
         sf::Event event;
         while (window.pollEvent(event))
@@ -42,41 +95,7 @@ int main()
                 return 0;
             }
         }
-
-        // clear the buffers
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        if (frame % 2 == 0) {
-            glClearColor(1.0, 1.0, 1.0, 0.0);
-        }
-        else {
-            //glClearColor(0.0, 1.0, 0.0, 0.0);
-        }
-        frame++;
-
-        /*
-        sf::Texture backgroundTexture;
-        backgroundTexture.setSrgb(false);
-        if (!backgroundTexture.loadFromFile("resources/background.jpg"))
-            return EXIT_FAILURE;
-        sf::Sprite background(backgroundTexture);
-        */
-
-        sf::Font font;
-        font.loadFromFile("arial.ttf");
-
-        sf::Text text;
-        text.setString("Hello");
-        text.setFont(font);
-        text.setCharacterSize(200);
-        text.setFillColor(sf::Color::Red);
-        text.setPosition(80, 50);
-
-        window.draw(text);
-
-        // end the current frame (internally swaps the front and back buffers)
-        window.display();
     }
-
+    
     return 0;
 }
