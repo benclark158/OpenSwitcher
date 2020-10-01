@@ -1,13 +1,12 @@
 
 #include "MediaPlayer.h"
 
-MediaPlayer::MediaPlayer() : m_Texture(),
+MediaPlayer::MediaPlayer() : 
 m_bVideoLoaded(false),
 m_bImageNeedsUpdate(false),
 m_pFormatCtx(NULL),
 m_iVideoStream(0),
 m_iFrameSize(0),
-m_pCodecCtx(NULL),
 m_pFrame(NULL),
 m_pFrameRGB(NULL),
 m_pBuffer(NULL),
@@ -22,13 +21,12 @@ m_fTimePassedSinceLastFrameUpdate(0)
 }
 
 
-MediaPlayer::MediaPlayer(const string& filename) : m_Texture(),
+MediaPlayer::MediaPlayer(const string& filename) : 
 m_bVideoLoaded(false),
 m_bImageNeedsUpdate(false),
 m_pFormatCtx(NULL),
 m_iVideoStream(0),
 m_iFrameSize(0),
-m_pCodecCtx(NULL),
 m_pFrame(NULL),
 m_pFrameRGB(NULL),
 m_pBuffer(NULL),
@@ -145,12 +143,12 @@ bool MediaPlayer::LoadFromFile(const string& filename)
 
     m_Texture.create(GetWidth(), GetHeight());
 
-    Update(10000);
+    update(10000);
 
     return true;
 } //Load From File
 
-void MediaPlayer::Update(float time)
+void MediaPlayer::update(float time)
 {
     if (m_bVideoLoaded)
     {
@@ -190,8 +188,8 @@ void MediaPlayer::LoadNextFrame()
     }
 
 }
-
-sf::Color MediaPlayer::GetPixel(nuint x, nuint y) const
+/*
+sf::Color Input::GetPixel(nuint x, nuint y) const
 {
     nuint i = 3 * (y * GetWidth() + x);
     sf::Uint8 red = m_pFrameRGB->data[0][i];
@@ -199,7 +197,7 @@ sf::Color MediaPlayer::GetPixel(nuint x, nuint y) const
     sf::Uint8 blue = m_pFrameRGB->data[0][i + 2];
     //return sf::Color(red, green, blue, 255);
     return sf::Color(0, 0, 255, 255);
-}
+}*/
 
 void MediaPlayer::UpdateImage()
 {

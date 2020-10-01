@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
+#include "Input.h"
 
 using namespace std;
 
@@ -27,11 +28,9 @@ extern "C"
 	#include <libavutil/imgutils.h>
 }
 
-class Webcam {
+class Webcam : public Input{
 
 private:
-	sf::Texture       m_Texture;
-
 	Webcam(const Webcam& rhs);
 	Webcam& operator=(const Webcam& rhs);
 
@@ -42,14 +41,8 @@ public:
 
 	void capture();
 	void init();
-	void update(int i);
 
-	sf::Vector2i Size() const { return sf::Vector2i(GetWidth(), GetHeight()); }
-
-	nuint GetWidth() const { return m_pCodecCtx->width; }
-	nuint GetHeight() const { return m_pCodecCtx->height; }
-
-	operator const sf::Texture& () const { return m_Texture; }
+	void update(float time);
 
 	sf::Color GetPixel(nuint x, nuint y) const;
 
@@ -68,7 +61,6 @@ public:
 	//Variables
 	string devName;
 	int framerate;
-	AVCodecContext* m_pCodecCtx;
 	AVFrame* m_pFrame;
 	AVFrame* m_pFrameRGB;
 	AVPacket        m_Packet;

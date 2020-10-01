@@ -8,6 +8,8 @@
 #include "MediaPlayer.h"
 
 #include <iostream>
+#include "Webcam.h"
+
 
 extern "C"
 {
@@ -18,7 +20,7 @@ extern "C"
     #include <libavutil/avutil.h>
     #include <libavfilter/buffersink.h>
     #include <libavfilter/buffersrc.h>
-#include "Webcam.h"
+#include "Mixer.h"
 }
 
 void registerAll() {
@@ -28,7 +30,7 @@ void registerAll() {
     avfilter_register_all();
 }
 
-int framerate = 25;
+int framerate = 24;
 
 int main()
 {
@@ -50,34 +52,60 @@ int main()
     window.setMouseCursorGrabbed(false);
 
     //hidden atm
-    MediaPlayer media("H:\RAW_VIDEOS\\7. Matt.MP4");
-    sf::Sprite sprite(media);
+    MediaPlayer media("Y:\\4 - Final Videos\\UoNTrampoline.mp4");
+    MediaPlayer media2("Y:\\4 - Final Videos\\Year in Review 2019 v8 FINAL.mp4");
+    //sf::Sprite sprite(media);
 
     //webcam
-    Webcam webcam("test");
-    webcam.showDshowDevice();
+    //Webcam webcam("test");
+    //webcam.showDshowDevice();
 
-    webcam.init();
-    sf::Sprite camSprite(webcam);
+    //webcam.init();
+    //sf::Sprite camSprite(webcam);
     
     //Not used yet!
     //sprite.setScale(0.5, 0.5);
     //sprite.setPosition(1920 / 2, 0);
 
+    Mixer mixer(8);
+    mixer.setInput(0, &media);
+    mixer.setInput(1, &media2);
+    mixer.setInput(2, &media);
+    mixer.setInput(3, &media2);
+    mixer.setInput(4, &media);
+    mixer.setInput(5, &media2);
+    mixer.setInput(6, &media);
+    mixer.setInput(7, &media2);
+    mixer.convertInputsSprite();
+
+    sf::Clock clock;
+
+    mixer.updateInputs(100);// this has poor performance! Threads?
+
     while (true)
     {   
+        float time = clock.getElapsedTime().asSeconds();
+        clock.restart();
+
         //updates media player
-        media.Update(1.0 / framerate);
-        webcam.update(1);
+        //media.Update(1.0 / framerate);
+        //webcam.update(1);
+
+        //std::cout << "Time fps: " << 1.0 / framerate << " Time Elapsed: " << time << std::endl;
+
+        //mixer.updateInputs(1.0 / framerate);
+        //mixer.updateInputs(time);
 
 
         // clear the buffers
         window.clear();
-        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClearColor(1.0, 1.0, 1.0, 0.0);
 
         //draws media player sprite!
-        window.draw(sprite);
-        window.draw(camSprite);
+        //window.draw(sprite);
+        //window.draw(camSprite);
+
+        mixer.drawMainMultiview(&window);
 
         window.display();
 

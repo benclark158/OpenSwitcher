@@ -110,7 +110,7 @@ void Webcam::capture() {
 
 }
 
-void Webcam::update(int i) {
+void Webcam::update(float time) {
     //capture();
     int frameFinished = 0;
     avcodec_decode_video2(m_pCodecCtx, m_pFrame, &frameFinished, &m_Packet);
