@@ -5,9 +5,14 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 
-#include "Input.h"
+#include <windows.h>
 #include <stdio.h>
 #include <iostream>
+#include <stdio.h>
+#include <iostream>
+
+#include "Input.h"
+
 
 extern "C"
 {
@@ -18,6 +23,8 @@ extern "C"
 class Mixer {
 	
 public:
+
+	Mixer() {}
 	Mixer(int nInputs) {
 		if (nInputs < 1) {
 			std::cout << "Invalid number of inputs" << std::endl;
@@ -96,11 +103,10 @@ public:
 		}
 	}
 
-
 	void updateInputs(float t) {
 		if (numberInputs > 0) {
 			for (int i = 0; i < numberInputs; i++) {
-				(*inputs[i]).update(t);
+				//unused 
 			}
 		}
 	}

@@ -4,11 +4,11 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
+#include <iostream>
 
 #include "MediaPlayer.h"
-
-#include <iostream>
 #include "Webcam.h"
+#include "Mixer.h"
 
 
 extern "C"
@@ -20,7 +20,29 @@ extern "C"
     #include <libavutil/avutil.h>
     #include <libavfilter/buffersink.h>
     #include <libavfilter/buffersrc.h>
-#include "Mixer.h"
+}
+
+Mixer mixer;
+bool running;
+int framerate = 24;
+
+DWORD WINAPI mediaUpdateLoop(PVOID lpParam)
+{   
+    MediaPlayer* player = (MediaPlayer*)lpParam;
+
+    sf::Clock clock;
+    while (running) {
+
+        float time = clock.getElapsedTime().asSeconds();
+        clock.restart();
+
+        //std::cout << "Time elapsed: " << time << endl;
+        (*player).update(time);
+    }
+
+    std::cout << "Thread ended!" << endl;
+    delete player;
+    return 1;
 }
 
 void registerAll() {
@@ -29,8 +51,6 @@ void registerAll() {
     avdevice_register_all();
     avfilter_register_all();
 }
-
-int framerate = 24;
 
 int main()
 {
@@ -52,8 +72,14 @@ int main()
     window.setMouseCursorGrabbed(false);
 
     //hidden atm
-    MediaPlayer media("Y:\\4 - Final Videos\\UoNTrampoline.mp4");
+    MediaPlayer media1("Y:\\4 - Final Videos\\UoNTrampoline.mp4");
     MediaPlayer media2("Y:\\4 - Final Videos\\Year in Review 2019 v8 FINAL.mp4");
+    MediaPlayer media3("Y:\\4 - Final Videos\\Spain 2015.mp4");
+    MediaPlayer media4("Y:\\4 - Final Videos\\RobinHood7s V2 12-6-2019.mp4");
+    MediaPlayer media5("Y:\\4 - Final Videos\\BAYWATCH 24-09-2018.mp4");
+    MediaPlayer media6("Y:\\4 - Final Videos\\HoliOnTheDowns2018 NEW.mp4");
+    MediaPlayer media7("Y:\\3 - Archive\\2020\\PromoCovid2020\\10 - OUT\\UniInReviewFINAL-FINAL.mp4");
+    MediaPlayer media8("Y:\\4 - Final Videos\\BUCS Big Wednesday 2018 - Fleeting 2018.mp4");
     //sf::Sprite sprite(media);
 
     //webcam
@@ -67,35 +93,38 @@ int main()
     //sprite.setScale(0.5, 0.5);
     //sprite.setPosition(1920 / 2, 0);
 
-    Mixer mixer(8);
-    mixer.setInput(0, &media);
+    mixer = Mixer(8);
+    mixer.setInput(0, &media1);
     mixer.setInput(1, &media2);
-    mixer.setInput(2, &media);
-    mixer.setInput(3, &media2);
-    mixer.setInput(4, &media);
-    mixer.setInput(5, &media2);
-    mixer.setInput(6, &media);
-    mixer.setInput(7, &media2);
+    mixer.setInput(2, &media3);
+    mixer.setInput(3, &media4);
+    mixer.setInput(4, &media5);
+    mixer.setInput(5, &media6);
+    mixer.setInput(6, &media7);
+    mixer.setInput(7, &media8);
     mixer.convertInputsSprite();
 
-    sf::Clock clock;
+    running = true;
 
-    mixer.updateInputs(100);// this has poor performance! Threads?
+    DWORD tid;
+    HANDLE t1 = CreateThread(NULL, 0, mediaUpdateLoop, &media1, 0, &tid);
+    HANDLE t2 = CreateThread(NULL, 0, mediaUpdateLoop, &media2, 0, &tid);
+    HANDLE t3 = CreateThread(NULL, 0, mediaUpdateLoop, &media3, 0, &tid);
+    HANDLE t4 = CreateThread(NULL, 0, mediaUpdateLoop, &media4, 0, &tid);
+    HANDLE t5 = CreateThread(NULL, 0, mediaUpdateLoop, &media5, 0, &tid);
+    HANDLE t6 = CreateThread(NULL, 0, mediaUpdateLoop, &media6, 0, &tid);
+    HANDLE t7 = CreateThread(NULL, 0, mediaUpdateLoop, &media7, 0, &tid);
+    HANDLE t8 = CreateThread(NULL, 0, mediaUpdateLoop, &media8, 0, &tid);
+
+    sf::Clock clock;
 
     while (true)
     {   
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
 
-        //updates media player
-        //media.Update(1.0 / framerate);
-        //webcam.update(1);
-
-        //std::cout << "Time fps: " << 1.0 / framerate << " Time Elapsed: " << time << std::endl;
-
-        //mixer.updateInputs(1.0 / framerate);
+        //std::cout << "Time elapsed: " << time << endl;
         //mixer.updateInputs(time);
-
 
         // clear the buffers
         window.clear();
