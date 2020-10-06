@@ -9,7 +9,7 @@
 #include "MediaPlayer.h"
 #include "Webcam.h"
 #include "Mixer.h"
-
+#include "NDI.cpp"
 
 extern "C"
 {
@@ -52,12 +52,7 @@ void registerAll() {
     avfilter_register_all();
 }
 
-int main()
-{
-    std::cout << "Starting switcher" << std::endl;
-    
-    registerAll();
-    
+void openWindow() {
     // create the window
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "OpenGL", sf::Style::None);
     window.setFramerateLimit(framerate); //Limits frame rate but has tearing
@@ -88,7 +83,7 @@ int main()
 
     //webcam.init();
     //sf::Sprite camSprite(webcam);
-    
+
     //Not used yet!
     //sprite.setScale(0.5, 0.5);
     //sprite.setPosition(1920 / 2, 0);
@@ -119,7 +114,7 @@ int main()
     sf::Clock clock;
 
     while (true)
-    {   
+    {
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
 
@@ -144,11 +139,22 @@ int main()
         {
             if (event.type == sf::Event::Closed)
             {
-                return 0;
+                return;
             }
         }
     }
+    return;
+}
+
+int main()
+{
+    std::cout << "Starting switcher" << std::endl;
     
+    //Registers all ffmpeg devices, filters, av etc
+    registerAll();
+    std::cout << "Registered AV" << std::endl;
+    
+    receiveNDI();
 
     return 0;
 }
